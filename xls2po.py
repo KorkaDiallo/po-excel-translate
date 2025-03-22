@@ -16,6 +16,9 @@ def main(locale, input_file, output_file):
     """
     Convert a XLS(X) file to a .PO file
     """
+    print(locale)
+    print(input_file)
+    print(output_file)
     XLSXToPortableObjectFile(locale=locale, input_file_path=Path(str(input_file)), output_file_path=Path(output_file))
 
 

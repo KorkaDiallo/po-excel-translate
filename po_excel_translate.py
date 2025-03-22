@@ -19,7 +19,7 @@ from openpyxl.cell import WriteOnlyCell
 
 class ColumnHeaders:
     message_context = "Message context"
-    message_id = "Message id"
+    message_id = "id" # The message to tranlate column name in the specified .xlsx file
     comment_source = "Source comment"
     comment_translator = "Translator comment"
     comment_references = "References"
@@ -406,7 +406,7 @@ class XLSXToPortableObjectFile:
             existing_po_file = polib.pofile(output_file_path, encoding=encoding)
 
         self.po_file = polib.POFile(wrap_width=wrap_width, encoding=encoding)
-        self.po_file.header = "This file was generated from %s" % input_file_path
+        self.po_file.header = f"This file was generated from {input_file_path}"
         self.po_file.metadata_is_fuzzy = False
         self.po_file.metadata = OrderedDict()
 
@@ -433,7 +433,7 @@ class XLSXToPortableObjectFile:
             if sheet.max_row < 2:
                 continue
 
-            print("Processing sheet %s" % sheet.title)
+            # # print("Processing sheet %s" % sheet.title)
             row_iterator = sheet.iter_rows()
             headers = [c.value for c in next(row_iterator)]
             headers = dict((b, a) for (a, b) in enumerate(headers))
@@ -446,11 +446,11 @@ class XLSXToPortableObjectFile:
             message_locale_column_index = headers.get(locale)
 
             if message_id_column_index is None:
-                print('Could not find a "%s" column' % ColumnHeaders.message_id, err=True)
+                print(f'Could not find a {ColumnHeaders.message_id} column')
                 continue
 
             if message_locale_column_index is None:
-                print('Could not find a "%s" column' % locale, err=True)
+                print(f'Could not find a {locale} column')
                 continue
 
             # Process each value
@@ -472,7 +472,6 @@ class XLSXToPortableObjectFile:
                     # Type different than default
                     if not isinstance(msgstr, str):
                         print(f"[WARNING][row={row_index}] key={msgid} got value of type = {type(msgstr)}")
-
                     entry = polib.POEntry(msgid=str(msgid), msgstr=str(msgstr) or "")
 
                     if message_context_column_index is not None and row[message_context_column_index]:
@@ -484,12 +483,15 @@ class XLSXToPortableObjectFile:
                     if comment_references_column_index:
                         entry.occurrences = str(row[comment_references_column_index])
 
+                    print(entry)
+
                     self.po_file.append(entry)
                 except IndexError:
-                    print("Row %s is too short" % row)
+                    print(f"Row {row} is too short")
 
         if not self.po_file:
-            sys.exit("No messages found, aborting", 1)
+            print("NO PO FILE")
+            sys.exit(1)
 
         self.save()
 
