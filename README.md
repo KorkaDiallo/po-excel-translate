@@ -101,5 +101,11 @@ Translations can be converted back from a spreadsheet into a PO-file using the `
 ```sh
 xls2po nl texts.xlsx nl.po
 ```
+or 
 
-This will take the Dutch (`nl`) translations from `texts.xls`, and (re)create an `nl.po` file using those. You can merge those into an existing po-file using a tool like gettext's `msgmerge`.
+```sh
+python .\xls2po.py nl texts.xlsx nl.po
+```
+This process extracts the Dutch (`nl`) translations from `texts.xls` and generates or updates an `nl.po` file accordingly. You can merge these translations into an existing PO file using a tool like gettext's `msgmerge`.
+
+Replace `nl` with your desired language code, ensuring it matches the column name in your `texts.xlsx` file. Your Excel file must contain at least two columns: `id` and your `specified_language_code`.
